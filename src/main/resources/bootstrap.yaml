@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: ms-movement
+
+  cloud:
+    config:
+      uri: http://localhost:8094
+      username: root
+      password: s3cr3t
