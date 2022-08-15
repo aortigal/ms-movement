@@ -5,7 +5,7 @@ import com.bank.msmovement.models.utils.ResponseMont;
 import com.bank.msmovement.models.utils.ResponseParameter;
 import reactor.core.publisher.Mono;
 
-public interface ParameterService {
+public interface PasiveService {
 
     Mono<ResponseParameter> getTypeParams(String idPasive);
     Mono<ResponseMont> getMont(String idPasive);

@@ -7,7 +7,7 @@ import com.bank.msmovement.models.documents.Parameter;
 import com.bank.msmovement.models.emus.TypeMovement;
 import com.bank.msmovement.models.emus.TypePasiveMovement;
 import com.bank.msmovement.models.utils.Mont;
-import com.bank.msmovement.services.ParameterService;
+import com.bank.msmovement.services.PasiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class MovementRestController
     private MovementDao dao;
 
     @Autowired
-    private ParameterService parameterService;
+    private PasiveService pasiveService;
     private static final Logger log = LoggerFactory.getLogger(MovementRestController.class);
 
     @GetMapping
@@ -82,14 +82,14 @@ public class MovementRestController
         AtomicReference<Float> currentMont = new AtomicReference<>(0f);
         AtomicReference<Float> addMont = new AtomicReference<>(0f);
 
-        return parameterService.getMont(mov.getPasiveId())
+        return pasiveService.getMont(mov.getPasiveId())
                 .flatMap(responseMont ->
                 {
                     if(responseMont.getData() != null)
                     {
                         currentMont.set(responseMont.getData().getMont());
 
-                        return parameterService.getTypeParams(mov.getPasiveId())
+                        return pasiveService.getTypeParams(mov.getPasiveId())
                                 .flatMap(parameters -> {
                                     log.info(parameters.toString());
 
@@ -144,7 +144,7 @@ public class MovementRestController
                                         mont.setMont(addMont.get());
                                         mont.setIdPasive(mov.getPasiveId());
 
-                                        return parameterService.setMont(mov.getPasiveId(),mont)
+                                        return pasiveService.setMont(mov.getPasiveId(),mont)
                                                 .flatMap(responseMont1 -> {
                                                     if(responseMont1.getStatus().equalsIgnoreCase("Ok"))
                                                         return dao.findAll()
