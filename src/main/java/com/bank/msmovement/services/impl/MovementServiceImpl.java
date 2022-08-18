@@ -1,6 +1,5 @@
 package com.bank.msmovement.services.impl;
 
-import com.bank.msmovement.controllers.MovementRestController;
 import com.bank.msmovement.handler.ResponseHandler;
 import com.bank.msmovement.models.dao.MovementDao;
 import com.bank.msmovement.models.documents.Movement;
@@ -31,7 +30,7 @@ public class MovementServiceImpl implements MovementService {
     @Autowired
     private PasiveService pasiveService;
 
-    private static final Logger log = LoggerFactory.getLogger(MovementRestController.class);
+    private static final Logger log = LoggerFactory.getLogger(MovementServiceImpl.class);
 
     @Override
     public Mono<ResponseHandler> findAll() {
