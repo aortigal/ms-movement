@@ -3,9 +3,9 @@ package com.bank.msmovement.models.utils;
 import lombok.Data;
 
 @Data
-public class ResponseMont
+public class ResponseAmount
 {
-    private Mont data;
+    private Amount data;
 
     private String message;
 

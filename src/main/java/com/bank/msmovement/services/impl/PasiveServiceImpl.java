@@ -1,7 +1,7 @@
 package com.bank.msmovement.services.impl;
 
-import com.bank.msmovement.models.utils.Mont;
-import com.bank.msmovement.models.utils.ResponseMont;
+import com.bank.msmovement.models.utils.Amount;
+import com.bank.msmovement.models.utils.ResponseAmount;
 import com.bank.msmovement.models.utils.ResponseParameter;
 import com.bank.msmovement.services.PasiveService;
 import org.springframework.stereotype.Service;
@@ -28,19 +28,19 @@ public class PasiveServiceImpl implements PasiveService {
     }
 
     @Override
-    public Mono<ResponseMont> getMont(String idPasive) {
+    public Mono<ResponseAmount> getAmount(String idPasive) {
         return webClient.get()
-                .uri("/api/pasive/mont/"+ idPasive)
+                .uri("/api/pasive/amount/"+ idPasive)
                 .retrieve()
-                .bodyToMono(ResponseMont.class);
+                .bodyToMono(ResponseAmount.class);
     }
 
     @Override
-    public Mono<ResponseMont> setMont(String idPasive, Mont mont) {
+    public Mono<ResponseAmount> setAmount(String idPasive, Amount amount) {
         return webClient.post()
-                .uri("/api/pasive/mont/"+ idPasive)
-                .body(Mono.just(mont), Mont.class)
+                .uri("/api/pasive/amount/"+ idPasive)
+                .body(Mono.just(amount), Amount.class)
                 .retrieve()
-                .bodyToMono(ResponseMont.class);
+                .bodyToMono(ResponseAmount.class);
     }
 }

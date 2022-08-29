@@ -24,8 +24,8 @@ public class Movement extends Audit
     @NotNull(message = "typeMovement must not be null")
     private TypeMovement typeMovement;
     private TypePasiveMovement typePasiveMovement;
-    private float mont;
-    private float comissionMont;
+    private float amount;
+    private float comissionAmount;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy",timezone = "GMT-05:00")
     private LocalDateTime created;

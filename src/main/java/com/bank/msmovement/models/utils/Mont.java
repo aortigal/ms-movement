@@ -3,9 +3,9 @@ package com.bank.msmovement.models.utils;
 import lombok.Data;
 
 @Data
-public class Mont
+public class Amount
 {
     private String idPasive;
-    private Float mont;
+    private Float amount;
 
 }

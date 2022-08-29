@@ -6,7 +6,7 @@ import com.bank.msmovement.models.documents.Movement;
 import com.bank.msmovement.models.documents.Parameter;
 import com.bank.msmovement.models.emus.TypeMovement;
 import com.bank.msmovement.models.emus.TypePasiveMovement;
-import com.bank.msmovement.models.utils.Mont;
+import com.bank.msmovement.models.utils.Amount;
 import com.bank.msmovement.services.MovementService;
 import com.bank.msmovement.services.PasiveService;
 import org.slf4j.Logger;
@@ -74,15 +74,15 @@ public class MovementServiceImpl implements MovementService {
         log.info("[INI] create Movement");
         mov.setCreated(LocalDateTime.now());
 
-        AtomicReference<Float> currentMont = new AtomicReference<>(0f);
-        AtomicReference<Float> addMont = new AtomicReference<>(0f);
+        AtomicReference<Float> currentAmount = new AtomicReference<>(0f);
+        AtomicReference<Float> addAmount = new AtomicReference<>(0f);
 
-        return pasiveService.getMont(mov.getPasiveId())
-                .flatMap(responseMont ->
+        return pasiveService.getAmount(mov.getPasiveId())
+                .flatMap(responseAmount ->
                 {
-                    if(responseMont.getData() != null)
+                    if(responseAmount.getData() != null)
                     {
-                        currentMont.set(responseMont.getData().getMont());
+                        currentAmount.set(responseAmount.getData().getAmount());
 
                         return pasiveService.getTypeParams(mov.getPasiveId())
                                 .flatMap(parameters -> {
@@ -101,14 +101,14 @@ public class MovementServiceImpl implements MovementService {
                                         if(parameter.getValue().equals("1") && !parameter.getArgument().equals("0"))
                                         {
                                             float percentage = Float.parseFloat(parameter.getArgument());
-                                            mov.setComissionMont(mov.getMont()*percentage);
+                                            mov.setComissionAmount(mov.getAmount()*percentage);
                                         }
                                         else if (parameter.getValue().equals("2") )
                                         {
                                             if(!parameter.getArgument().equals("false"))
                                             {
                                                 int day = Integer.parseInt(parameter.getArgument());
-                                                differentDates.set(LocalDateTime.now().getDayOfMonth() == day);
+                                                differentDates.set(LocalDateTime.now().getDayOfAmounth() == day);
                                             }
                                             else
                                                 differentDates.set(true);
@@ -124,24 +124,24 @@ public class MovementServiceImpl implements MovementService {
 
                                     if(mov.getTypeMovement().equals(TypeMovement.DEPOSITS))
                                     {
-                                        addMont.set((addMont.get() - mov.getComissionMont()) + mov.getMont());
+                                        addAmount.set((addAmount.get() - mov.getComissionAmount()) + mov.getAmount());
                                     }
                                     else if(mov.getTypeMovement().equals(TypeMovement.WITHDRAWALS))
                                     {
-                                        addMont.set((addMont.get() - mov.getComissionMont())  - mov.getMont());
+                                        addAmount.set((addAmount.get() - mov.getComissionAmount())  - mov.getAmount());
                                     }
 
-                                    float newMont = currentMont.get() - addMont.get();
+                                    float newAmount = currentAmount.get() - addAmount.get();
 
-                                    if(newMont > 0)
+                                    if(newAmount > 0)
                                     {
-                                        Mont mont = new Mont();
-                                        mont.setMont(addMont.get());
-                                        mont.setIdPasive(mov.getPasiveId());
+                                        Amount amount = new Amount();
+                                        amount.setAmount(addAmount.get());
+                                        amount.setIdPasive(mov.getPasiveId());
 
-                                        return pasiveService.setMont(mov.getPasiveId(),mont)
-                                                .flatMap(responseMont1 -> {
-                                                    if(responseMont1.getStatus().equalsIgnoreCase("Ok"))
+                                        return pasiveService.setAmount(mov.getPasiveId(),amount)
+                                                .flatMap(responseAmount1 -> {
+                                                    if(responseAmount1.getStatus().equalsIgnoreCase("Ok"))
                                                         return dao.findAll()
                                                                 .doOnNext(movement -> {
                                                                     String dateCreated = movement.getCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
@@ -231,11 +231,11 @@ public class MovementServiceImpl implements MovementService {
                     if(movement.getClientId().equals(id))
                         if(movement.getTypeMovement().equals(TypeMovement.DEPOSITS))
                         {
-                            balance.set((balance.get() - movement.getComissionMont()) + movement.getMont());
+                            balance.set((balance.get() - movement.getComissionAmount()) + movement.getAmount());
                         }
                         else if(movement.getTypeMovement().equals(TypeMovement.WITHDRAWALS))
                         {
-                            balance.set((balance.get() - movement.getComissionMont())  - movement.getMont());
+                            balance.set((balance.get() - movement.getComissionAmount())  - movement.getAmount());
                         }
                 })
                 .collectList()
