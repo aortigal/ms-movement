@@ -108,7 +108,7 @@ public class MovementServiceImpl implements MovementService {
                                             if(!parameter.getArgument().equals("false"))
                                             {
                                                 int day = Integer.parseInt(parameter.getArgument());
-                                                differentDates.set(LocalDateTime.now().getDayOfAmounth() == day);
+                                                differentDates.set(LocalDateTime.now().getDayOfMonth() == day);
                                             }
                                             else
                                                 differentDates.set(true);
